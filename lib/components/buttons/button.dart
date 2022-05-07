@@ -7,17 +7,19 @@ import 'package:mobile_flutter/theme/colors.dart';
 class Button extends StatelessWidget {
   final String label;
   final Color backgroundColor;
+  final VoidCallback onPressed;
 
   const Button({
     Key? key,
     required this.label,
     required this.backgroundColor,
+    required this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: ButtonStyle(
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(

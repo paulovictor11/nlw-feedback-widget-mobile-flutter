@@ -1,12 +1,19 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mobile_flutter/components/buttons/button.dart';
 import 'package:mobile_flutter/components/copyright.dart';
 import 'package:mobile_flutter/components/illustration.dart';
 import 'package:mobile_flutter/theme/colors.dart';
 
 class FeedbackSuccess extends StatelessWidget {
-  const FeedbackSuccess({Key? key}) : super(key: key);
+  final VoidCallback onRestartFeedback;
+
+  const FeedbackSuccess({
+    Key? key,
+    required this.onRestartFeedback,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +34,10 @@ class FeedbackSuccess extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          const Button(
+          Button(
             label: 'Quero enviar outro',
             backgroundColor: DarkTheme.surfaceSecondary,
+            onPressed: onRestartFeedback,
           ),
           const SizedBox(height: 56),
           const Copyright(),

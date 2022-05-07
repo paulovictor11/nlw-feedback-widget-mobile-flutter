@@ -1,12 +1,19 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'package:mobile_flutter/components/buttons/option.dart';
 import 'package:mobile_flutter/components/copyright.dart';
 import 'package:mobile_flutter/components/illustration.dart';
-import 'package:mobile_flutter/components/buttons/option.dart';
 import 'package:mobile_flutter/theme/colors.dart';
 
 class FeedbackType extends StatelessWidget {
-  const FeedbackType({Key? key}) : super(key: key);
+  final Function(String type) onSelectOption;
+
+  const FeedbackType({
+    Key? key,
+    required this.onSelectOption,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +38,17 @@ class FeedbackType extends StatelessWidget {
                 Option(
                   image: Illustration.bug(),
                   title: 'Problema',
+                  onTap: () => onSelectOption('BUG'),
                 ),
                 Option(
                   image: Illustration.idea(),
                   title: 'Ideia',
+                  onTap: () => onSelectOption('IDEA'),
                 ),
                 Option(
                   image: Illustration.thought(),
                   title: 'Outro',
+                  onTap: () => onSelectOption('OTHER'),
                 ),
               ],
             ),

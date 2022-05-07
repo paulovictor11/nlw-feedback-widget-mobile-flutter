@@ -1,15 +1,27 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_phosphor_icons/flutter_phosphor_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:mobile_flutter/components/buttons/button.dart';
-import 'package:mobile_flutter/components/copyright.dart';
-import 'package:mobile_flutter/components/illustration.dart';
 import 'package:mobile_flutter/components/buttons/screenshot.dart';
+import 'package:mobile_flutter/components/copyright.dart';
 import 'package:mobile_flutter/components/inputs/textarea.dart';
 import 'package:mobile_flutter/theme/colors.dart';
 
 class FeedbackContent extends StatelessWidget {
-  const FeedbackContent({Key? key}) : super(key: key);
+  final Map<String, Object> feedbakType;
+  final TextEditingController commentController;
+  final VoidCallback onRestartFeedback;
+  final VoidCallback onSendFeedback;
+
+  FeedbackContent({
+    Key? key,
+    required this.feedbakType,
+    required this.commentController,
+    required this.onRestartFeedback,
+    required this.onSendFeedback,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +34,10 @@ class FeedbackContent extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Illustration.bug(
-                    size: const Size(24, 24),
-                  ),
+                  feedbakType['image'] as Widget,
                   const SizedBox(width: 8),
                   Text(
-                    'Problema',
+                    feedbakType['title'].toString(),
                     style: GoogleFonts.inter(
                       color: DarkTheme.textPrimary,
                       fontWeight: FontWeight.w500,
@@ -36,23 +46,30 @@ class FeedbackContent extends StatelessWidget {
                   )
                 ],
               ),
-              const Icon(
-                PhosphorIcons.arrow_left,
-                color: DarkTheme.textSecondary,
+              GestureDetector(
+                onTap: onRestartFeedback,
+                child: const Icon(
+                  PhosphorIcons.arrow_left,
+                  color: DarkTheme.textSecondary,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          const Textarea(),
+          Textarea(
+            controller: commentController,
+          ),
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Screenshot(),
+            children: [
+              const Screenshot(),
               Expanded(
                 child: Button(
                   label: 'Enviar feedback',
                   backgroundColor: BrandColors.brand,
+                  onPressed:
+                      commentController.text.isEmpty ? () {} : onSendFeedback,
                 ),
               ),
             ],
