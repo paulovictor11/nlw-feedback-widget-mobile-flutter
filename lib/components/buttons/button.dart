@@ -7,12 +7,14 @@ import 'package:mobile_flutter/theme/colors.dart';
 class Button extends StatelessWidget {
   final String label;
   final Color backgroundColor;
+  final bool isLoading;
   final VoidCallback onPressed;
 
   const Button({
     Key? key,
     required this.label,
     required this.backgroundColor,
+    this.isLoading = false,
     required this.onPressed,
   }) : super(key: key);
 
@@ -32,14 +34,29 @@ class Button extends StatelessWidget {
         padding: const EdgeInsets.symmetric(
           horizontal: 16,
         ),
-        child: Text(
-          label,
-          style: GoogleFonts.inter(
-            color: BrandColors.textOnBrandColor,
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-          ),
+        child: _renderLabel(),
+      ),
+    );
+  }
+
+  Widget _renderLabel() {
+    if (isLoading) {
+      return const SizedBox(
+        height: 15,
+        width: 15,
+        child: CircularProgressIndicator(
+          color: DarkTheme.textPrimary,
+          strokeWidth: 2,
         ),
+      );
+    }
+
+    return Text(
+      label,
+      style: GoogleFonts.inter(
+        color: BrandColors.textOnBrandColor,
+        fontWeight: FontWeight.w500,
+        fontSize: 14,
       ),
     );
   }

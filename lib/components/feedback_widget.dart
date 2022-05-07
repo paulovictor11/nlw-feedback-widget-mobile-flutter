@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -46,10 +46,12 @@ class FeedbackWidget extends StatefulWidget {
 
 class _FeedbackWidgetState extends State<FeedbackWidget> {
   final _commentController = TextEditingController();
+  final _dio = Dio(BaseOptions(baseUrl: 'http://192.168.0.9:3333'));
 
   String _feedbackTypeSelected = '';
   bool _isFeedbackSent = false;
   String _screenshot = '';
+  bool _isSendingFeedback = false;
 
   @override
   Widget build(BuildContext context) {
@@ -82,27 +84,13 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
   Widget _renderFeedbackStep() {
     if (_feedbackTypeSelected.isNotEmpty && !_isFeedbackSent) {
       return FeedbackContent(
-        screenshot: _screenshot,
         feedbakType: feedbackTypes[_feedbackTypeSelected]!,
         commentController: _commentController,
-        onRestartFeedback: () {
-          setState(() {
-            _feedbackTypeSelected = '';
-          });
-        },
-        onSendFeedback: () {
-          setState(() {
-            _isFeedbackSent = true;
-          });
-        },
-        onTakeScreenshot: () async {
-          final image = await widget.screenshotController.capture();
-          final imageBase64 = base64.encode(image!.toList());
-
-          setState(() {
-            _screenshot = 'data:image/png;base64,$imageBase64';
-          });
-        },
+        screenshot: _screenshot,
+        isSendingFeedback: _isSendingFeedback,
+        onRestartFeedback: _resetFields,
+        onSendFeedback: _onSendFeedback,
+        onTakeScreenshot: _onTakeScreenshot,
         onRemoveScreenshot: () {
           setState(() {
             _screenshot = '';
@@ -113,13 +101,7 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
 
     if (_feedbackTypeSelected.isNotEmpty && _isFeedbackSent) {
       return FeedbackSuccess(
-        onRestartFeedback: () {
-          setState(() {
-            _commentController.text = '';
-            _feedbackTypeSelected = '';
-            _isFeedbackSent = false;
-          });
-        },
+        onRestartFeedback: _resetFields,
       );
     }
 
@@ -127,6 +109,40 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
       setState(() {
         _feedbackTypeSelected = type;
       });
+    });
+  }
+
+  void _onSendFeedback() async {
+    setState(() {
+      _isSendingFeedback = true;
+    });
+
+    await _dio.post('/feedbacks', data: {
+      'type': _feedbackTypeSelected,
+      'comment': _commentController.text,
+      'screenchot': 'data:image/png;base64,$_screenshot'
+    });
+
+    setState(() {
+      _isSendingFeedback = false;
+      _isFeedbackSent = true;
+    });
+  }
+
+  void _onTakeScreenshot() async {
+    final image = await widget.screenshotController.capture();
+    final imageBase64 = base64.encode(image!.toList());
+
+    setState(() {
+      _screenshot = imageBase64;
+    });
+  }
+
+  void _resetFields() {
+    setState(() {
+      _commentController.text = '';
+      _feedbackTypeSelected = '';
+      _isFeedbackSent = false;
     });
   }
 }

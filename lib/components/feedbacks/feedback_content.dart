@@ -13,6 +13,7 @@ class FeedbackContent extends StatelessWidget {
   final Map<String, Object> feedbakType;
   final TextEditingController commentController;
   final String screenshot;
+  final bool isSendingFeedback;
   final VoidCallback onRestartFeedback;
   final VoidCallback onSendFeedback;
   final VoidCallback onTakeScreenshot;
@@ -23,6 +24,7 @@ class FeedbackContent extends StatelessWidget {
     required this.feedbakType,
     required this.commentController,
     required this.screenshot,
+    required this.isSendingFeedback,
     required this.onRestartFeedback,
     required this.onSendFeedback,
     required this.onTakeScreenshot,
@@ -79,6 +81,7 @@ class FeedbackContent extends StatelessWidget {
                 child: Button(
                   label: 'Enviar feedback',
                   backgroundColor: BrandColors.brand,
+                  isLoading: isSendingFeedback,
                   onPressed:
                       commentController.text.isEmpty ? () {} : onSendFeedback,
                 ),

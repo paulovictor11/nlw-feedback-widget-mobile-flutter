@@ -38,7 +38,7 @@ class _ScreenshotButtonState extends State<ScreenshotButton> {
           child: Stack(
             children: [
               Image.memory(
-                base64.decode(widget.screenshot.split(',')[1]),
+                base64.decode(widget.screenshot),
                 fit: BoxFit.fill,
                 height: 40,
                 width: 40,
