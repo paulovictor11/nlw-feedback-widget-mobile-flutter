@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phosphor_icons/flutter_phosphor_icons.dart';
 import 'package:mobile_flutter/components/feedback_widget.dart';
 import 'package:mobile_flutter/theme/colors.dart';
+import 'package:screenshot/screenshot.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -19,17 +20,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final _screenshotController = ScreenshotController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: BrandColors.background,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openFeedbackBottomSheet(context),
-        backgroundColor: BrandColors.brand,
-        child: const Icon(
-          PhosphorIcons.chat_teardrop_dots,
-          color: BrandColors.textOnBrandColor,
-          size: 28,
+    return Screenshot(
+      controller: _screenshotController,
+      child: Scaffold(
+        backgroundColor: BrandColors.background,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _openFeedbackBottomSheet(context),
+          backgroundColor: BrandColors.brand,
+          child: const Icon(
+            PhosphorIcons.chat_teardrop_dots,
+            color: BrandColors.textOnBrandColor,
+            size: 28,
+          ),
         ),
       ),
     );
@@ -46,7 +52,9 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       builder: (context) {
-        return const FeedbackWidget();
+        return FeedbackWidget(
+          screenshotController: _screenshotController,
+        );
       },
     );
   }

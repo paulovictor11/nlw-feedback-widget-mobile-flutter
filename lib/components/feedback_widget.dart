@@ -1,4 +1,10 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:screenshot/screenshot.dart';
+
 import 'package:mobile_flutter/components/feedbacks/feedback_content.dart';
 import 'package:mobile_flutter/components/feedbacks/feedback_success.dart';
 import 'package:mobile_flutter/components/feedbacks/feedback_type.dart';
@@ -27,7 +33,12 @@ final feedbackTypes = {
 };
 
 class FeedbackWidget extends StatefulWidget {
-  const FeedbackWidget({Key? key}) : super(key: key);
+  final ScreenshotController screenshotController;
+
+  const FeedbackWidget({
+    Key? key,
+    required this.screenshotController,
+  }) : super(key: key);
 
   @override
   State<FeedbackWidget> createState() => _FeedbackWidgetState();
@@ -36,8 +47,9 @@ class FeedbackWidget extends StatefulWidget {
 class _FeedbackWidgetState extends State<FeedbackWidget> {
   final _commentController = TextEditingController();
 
-  String feedbackTypeSelected = '';
-  bool isFeedbackSent = false;
+  String _feedbackTypeSelected = '';
+  bool _isFeedbackSent = false;
+  String _screenshot = '';
 
   @override
   Widget build(BuildContext context) {
@@ -68,30 +80,44 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
   }
 
   Widget _renderFeedbackStep() {
-    if (feedbackTypeSelected.isNotEmpty && !isFeedbackSent) {
+    if (_feedbackTypeSelected.isNotEmpty && !_isFeedbackSent) {
       return FeedbackContent(
-        feedbakType: feedbackTypes[feedbackTypeSelected]!,
+        screenshot: _screenshot,
+        feedbakType: feedbackTypes[_feedbackTypeSelected]!,
         commentController: _commentController,
         onRestartFeedback: () {
           setState(() {
-            feedbackTypeSelected = '';
+            _feedbackTypeSelected = '';
           });
         },
         onSendFeedback: () {
           setState(() {
-            isFeedbackSent = true;
+            _isFeedbackSent = true;
+          });
+        },
+        onTakeScreenshot: () async {
+          final image = await widget.screenshotController.capture();
+          final imageBase64 = base64.encode(image!.toList());
+
+          setState(() {
+            _screenshot = 'data:image/png;base64,$imageBase64';
+          });
+        },
+        onRemoveScreenshot: () {
+          setState(() {
+            _screenshot = '';
           });
         },
       );
     }
 
-    if (feedbackTypeSelected.isNotEmpty && isFeedbackSent) {
+    if (_feedbackTypeSelected.isNotEmpty && _isFeedbackSent) {
       return FeedbackSuccess(
         onRestartFeedback: () {
           setState(() {
             _commentController.text = '';
-            feedbackTypeSelected = '';
-            isFeedbackSent = false;
+            _feedbackTypeSelected = '';
+            _isFeedbackSent = false;
           });
         },
       );
@@ -99,7 +125,7 @@ class _FeedbackWidgetState extends State<FeedbackWidget> {
 
     return FeedbackType(onSelectOption: (type) {
       setState(() {
-        feedbackTypeSelected = type;
+        _feedbackTypeSelected = type;
       });
     });
   }

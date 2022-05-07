@@ -20,18 +20,13 @@ class Button extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onPressed,
-      style: ButtonStyle(
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-          ),
+      style: TextButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
         ),
-        backgroundColor: MaterialStateProperty.all<Color>(
-          backgroundColor,
-        ),
-        fixedSize: MaterialStateProperty.all<Size>(
-          const Size.fromHeight(40),
-        ),
+        backgroundColor: backgroundColor,
+        fixedSize: const Size.fromHeight(40),
+        padding: EdgeInsets.zero,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(

@@ -12,15 +12,21 @@ import 'package:mobile_flutter/theme/colors.dart';
 class FeedbackContent extends StatelessWidget {
   final Map<String, Object> feedbakType;
   final TextEditingController commentController;
+  final String screenshot;
   final VoidCallback onRestartFeedback;
   final VoidCallback onSendFeedback;
+  final VoidCallback onTakeScreenshot;
+  final VoidCallback onRemoveScreenshot;
 
-  FeedbackContent({
+  const FeedbackContent({
     Key? key,
     required this.feedbakType,
     required this.commentController,
+    required this.screenshot,
     required this.onRestartFeedback,
     required this.onSendFeedback,
+    required this.onTakeScreenshot,
+    required this.onRemoveScreenshot,
   }) : super(key: key);
 
   @override
@@ -63,7 +69,12 @@ class FeedbackContent extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Screenshot(),
+              ScreenshotButton(
+                screenshot: screenshot,
+                onPressed: onTakeScreenshot,
+                onRemove: onRemoveScreenshot,
+              ),
+              const SizedBox(width: 8),
               Expanded(
                 child: Button(
                   label: 'Enviar feedback',
